@@ -14,7 +14,7 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v2
         with:
-          go-version: '1.14.0' # The Go version to download (if necessary) and use.
+          go-version: '1.17.3'
 
       # Install all the dependencies
       - name: Install dependencies
@@ -24,14 +24,14 @@ jobs:
 
       # Run build of the application
       - name: Run build
-        run: go build .
+        run: go build ./...
 
       # Run vet & lint on the code
-      - name: Run vet & lint
-        run: |
-          go vet .
-          golint .
-
+#      - name: Run vet & lint
+#        run: |
+#          go vet .
+#          golint .
+#
       # Run testing on the code
       - name: Run testing
-        run: cd test && go test -v
+        run: go test ./... -v
