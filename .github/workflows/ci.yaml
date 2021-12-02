@@ -3,7 +3,7 @@ name: ci
 on: [push]
 
 env:
-  DATA_DIR: "${GITHUB_WORKSPACE}"
+  DATA_DIR: "${{env.GITHUB_WORKSPACE}}"
 
 jobs:
   build:
@@ -37,4 +37,6 @@ jobs:
 #
       # Run testing on the code
       - name: Run testing
+        env:
+
         run: go test ./... -v
