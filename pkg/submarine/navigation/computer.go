@@ -6,35 +6,23 @@ import (
 	"strings"
 )
 
-func PredictPosition(commands []string, coordinates submarine.Coordinates) submarine.Coordinates {
-	coords := coordinates
+func PredictLinearPosition(commands []string, coordinates submarine.Coordinates) submarine.Coordinates {
 	for _, command := range commands {
-		moveForward(command, &coords)
-		moveDown(command, &coords)
-		moveUp(command, &coords)
+		coordinates.Position += getDistance(command, "forward")
+		coordinates.Depth += getDistance(command, "down")
+		coordinates.Depth -= getDistance(command, "up")
 	}
-	return coords
+	return coordinates
 }
 
-func moveUp(command string, coordinates *submarine.Coordinates) {
-	distance := getDistance(command, "up")
-	if distance > 0 {
-		coordinates.Depth -= distance
+func PredictAimedPosition(commands []string, coordinates submarine.Coordinates) submarine.Coordinates {
+	for _, command := range commands {
+		coordinates.Position += getDistance(command, "forward")
+		coordinates.Depth += getDistance(command, "forward") * coordinates.Aim
+		coordinates.Aim += getDistance(command, "down")
+		coordinates.Aim -= getDistance(command, "up")
 	}
-}
-
-func moveDown(command string, coordinates *submarine.Coordinates) {
-	distance := getDistance(command, "down")
-	if distance > 0 {
-		coordinates.Depth += distance
-	}
-}
-
-func moveForward(command string, coordinates *submarine.Coordinates) {
-	distance := getDistance(command, "forward")
-	if distance > 0 {
-		coordinates.Position += distance
-	}
+	return coordinates
 }
 
 func getDistance(command string, instruction string) int {

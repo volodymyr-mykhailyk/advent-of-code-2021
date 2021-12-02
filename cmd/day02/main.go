@@ -11,7 +11,10 @@ func main() {
 	tasks.Announce("Day02")
 	commands := tasks.ReadLines("cmd/day02/input.txt")
 	fmt.Printf("Predicting %v submatrine movements\n", len(commands))
-	coordinates := navigation.PredictPosition(commands, submarine.Coordinates{})
-	distanceChecksum := coordinates.Position * coordinates.Depth
-	fmt.Printf("Predicted position: %v. Calculated distance checksum: %v\n", coordinates, distanceChecksum)
+	linearCoords := navigation.PredictLinearPosition(commands, submarine.ZeroCoordinates())
+	linearChecksum := linearCoords.Position * linearCoords.Depth
+	fmt.Printf("Predicted Linear Position: %v. Calculated distance checksum: %v\n", linearCoords, linearChecksum)
+	aimedCoords := navigation.PredictAimedPosition(commands, submarine.ZeroCoordinates())
+	aimedChecksum := aimedCoords.Position * aimedCoords.Depth
+	fmt.Printf("Predicted Aimed Position: %v. Calculated distance checksum: %v\n", aimedCoords, aimedChecksum)
 }
