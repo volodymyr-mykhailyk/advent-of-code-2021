@@ -11,7 +11,8 @@ import (
 func PathToFile(file string) string {
 	basePath := os.Getenv("DATA_DIR")
 	if basePath == "" {
-		basePath = "/Users/vmykhailyk/projects/personal/advent-of-code-2021/"
+		ex, _ := os.Getwd()
+		basePath = filepath.Dir(ex)
 	}
 	return filepath.Join(basePath, file)
 }
