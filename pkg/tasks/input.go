@@ -36,11 +36,12 @@ func ParseIntegers(input []string) []int {
 	}
 	return result
 }
-func ParseBits(input []string) []int64 {
-	var result []int64
+
+func ParseBits(input []string) []int {
+	var result []int
 	for _, v := range input {
-		parsed, err := strconv.ParseInt(v, 2, 64)
-		result = append(result, parsed)
+		parsed, err := strconv.ParseInt(v, 2, 0)
+		result = append(result, int(parsed))
 		if err != nil {
 			log.Fatalf("unable to parse int: %v", v)
 		}

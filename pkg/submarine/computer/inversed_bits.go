@@ -19,8 +19,25 @@ func ClearBit(n int, pos int) int {
 	return n
 }
 
-func HasBit(n int, pos int) bool {
+func GetBit(n int, pos int) int {
+	extract := n & (1 << pos)
+	if extract > 0 {
+		return 1
+	} else {
+		return 0
+	}
+}
+
+func HasOne(n int, pos int) bool {
 	val := n & (1 << pos)
 	return val > 0
+}
+
+func InvertBit(b int) int {
+	if b == 1 {
+		return 0
+	} else {
+		return 1
+	}
 }
 
