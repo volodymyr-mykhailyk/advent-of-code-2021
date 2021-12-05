@@ -4,7 +4,6 @@ import (
 	"log"
 	"os"
 	"path/filepath"
-	"strconv"
 	"strings"
 )
 
@@ -25,26 +24,8 @@ func ReadLines(file string) []string {
 	return strings.Split(string(body), "\n")
 }
 
-func ParseIntegers(input []string) []int {
-	var result []int
-	for _, v := range input {
-		parsed, err := strconv.Atoi(v)
-		result = append(result, parsed)
-		if err != nil {
-			log.Fatalf("unable to parse int: %v", v)
-		}
+func Iterate(inputs []string, iterator func(input string, index int)) {
+	for i, input := range inputs {
+		iterator(input, i)
 	}
-	return result
-}
-
-func ParseBits(input []string) []int {
-	var result []int
-	for _, v := range input {
-		parsed, err := strconv.ParseInt(v, 2, 0)
-		result = append(result, int(parsed))
-		if err != nil {
-			log.Fatalf("unable to parse int: %v", v)
-		}
-	}
-	return result
 }

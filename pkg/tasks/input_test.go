@@ -1,7 +1,6 @@
 package tasks
 
 import (
-	"reflect"
 	"testing"
 )
 
@@ -26,17 +25,6 @@ func TestReadLines(t *testing.T) {
 		want := ""
 		if got != want {
 			t.Errorf("ReadLines()[1] = %v, want %v", got, want)
-		}
-	})
-}
-
-func TestParseIntegers(t *testing.T) {
-	content := ParseIntegers([]string{"1", "0", "-1000"})
-	t.Run("Parsing", func(t *testing.T) {
-		got := content
-		want := []int{1, 0, -1000}
-		if !reflect.DeepEqual(got, want) {
-			t.Errorf("ParseIntegers()) = %v, want %v", got, want)
 		}
 	})
 }
