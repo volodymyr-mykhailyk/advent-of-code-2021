@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/vmykhailyk/advent-of-code-2021/pkg/ocean"
+	"github.com/vmykhailyk/advent-of-code-2021/pkg/submarine/sonar"
 	"github.com/vmykhailyk/advent-of-code-2021/pkg/tasks"
 )
 
@@ -21,5 +22,10 @@ func main() {
 
 	fmt.Printf("Analyzing %v vents\n", len(vents))
 	fmt.Printf("Mapping %v straight vents\n", len(straightVents))
+
+	straightVentsMap := sonar.BuildVentMap(straightVents)
+	straightDangerousPoints := sonar.DangerousPoints(straightVentsMap)
+
+	fmt.Printf("Dangerous Points %v", len(straightDangerousPoints))
 }
 

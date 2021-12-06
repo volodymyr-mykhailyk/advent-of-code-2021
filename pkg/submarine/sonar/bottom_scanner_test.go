@@ -8,6 +8,14 @@ import (
 )
 
 func TestBuildVentMap(t *testing.T) {
+	t.Run("Example", func(t *testing.T) {
+		readings := buildVents(day05ExampleInput())
+		got := len(BuildVentMap(readings))
+		want := 21
+		if got != want {
+			t.Errorf("TestBuildVentMap() = %v, want %v", got, want)
+		}
+	})
 	t.Run("Horizontal", func(t *testing.T) {
 		readings := buildVents([]string{"1,1 -> 3,1"})
 		got := BuildVentMap(readings)
@@ -34,6 +42,18 @@ func TestBuildVentMap(t *testing.T) {
 	})
 }
 
+func TestDangerousPoints(t *testing.T) {
+	t.Run("Example", func(t *testing.T) {
+		readings := buildVents(day05ExampleInput())
+		ventMap := BuildVentMap(readings)
+		got := len(DangerousPoints(ventMap))
+		want := 5
+		if got != want {
+			t.Errorf("TestDangerousPoints() = %v, want %v", got, want)
+		}
+	})
+}
+
 func buildVents(inputs []string) []ocean.Vent {
 	vents := make([]ocean.Vent, len(inputs))
 	tasks.Iterate(inputs, func(input string, i int) {
@@ -41,4 +61,20 @@ func buildVents(inputs []string) []ocean.Vent {
 	})
 	return vents
 }
+
+func day05ExampleInput() []string {
+	return []string{
+		"0,9 -> 5,9",
+		"8,0 -> 0,8",
+		"9,4 -> 3,4",
+		"2,2 -> 2,1",
+		"7,0 -> 7,4",
+		"6,4 -> 2,0",
+		"0,9 -> 2,9",
+		"3,4 -> 1,4",
+		"0,0 -> 8,8",
+		"5,5 -> 8,2",
+	}
+}
+
 
