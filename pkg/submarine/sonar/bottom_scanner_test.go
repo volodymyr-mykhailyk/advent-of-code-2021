@@ -1,17 +1,29 @@
 package sonar
 
 import (
+	"fmt"
 	"github.com/vmykhailyk/advent-of-code-2021/pkg/ocean"
 	"github.com/vmykhailyk/advent-of-code-2021/pkg/tasks"
 	"reflect"
+	"strings"
 	"testing"
 )
 
 func TestBuildVentMap(t *testing.T) {
-	t.Run("Example", func(t *testing.T) {
-		readings := buildVents(day05ExampleInput())
+	t.Run("Example 1", func(t *testing.T) {
+		readings := perpendicularVents(buildVents(day05ExampleInput()))
 		got := len(BuildVentMap(readings))
 		want := 21
+		if got != want {
+			t.Errorf("TestBuildVentMap() = %v, want %v", got, want)
+		}
+	})
+	t.Run("Example 2", func(t *testing.T) {
+		readings := buildVents(day05ExampleInput())
+		ventMap := BuildVentMap(readings)
+		got := len(ventMap)
+		fmt.Printf("%v", strings.Join(ventMap.Presentation(), "\n"))
+		want := 39
 		if got != want {
 			t.Errorf("TestBuildVentMap() = %v, want %v", got, want)
 		}
@@ -42,12 +54,22 @@ func TestBuildVentMap(t *testing.T) {
 	})
 }
 
+
 func TestDangerousPoints(t *testing.T) {
-	t.Run("Example", func(t *testing.T) {
-		readings := buildVents(day05ExampleInput())
+	t.Run("Example 1", func(t *testing.T) {
+		readings := perpendicularVents(buildVents(day05ExampleInput()))
 		ventMap := BuildVentMap(readings)
 		got := len(DangerousPoints(ventMap))
 		want := 5
+		if got != want {
+			t.Errorf("TestDangerousPoints() = %v, want %v", got, want)
+		}
+	})
+	t.Run("Example 2", func(t *testing.T) {
+		readings := buildVents(day05ExampleInput())
+		ventMap := BuildVentMap(readings)
+		got := len(DangerousPoints(ventMap))
+		want := 12
 		if got != want {
 			t.Errorf("TestDangerousPoints() = %v, want %v", got, want)
 		}
@@ -59,6 +81,16 @@ func buildVents(inputs []string) []ocean.Vent {
 	tasks.Iterate(inputs, func(input string, i int) {
 		vents[i] = ocean.VentFromString(input)
 	})
+	return vents
+}
+
+func perpendicularVents(readings []ocean.Vent) []ocean.Vent {
+	var vents []ocean.Vent
+	for _, vent := range readings {
+		if vent.IsHorizontal() || vent.IsVertical() {
+			vents = append(vents, vent)
+		}
+	}
 	return vents
 }
 
