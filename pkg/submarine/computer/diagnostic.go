@@ -6,7 +6,6 @@ import (
 
 func PowerConsumption(reports []int, bitRate int) int {
 	reportLength := len(reports)
-	fmt.Printf("eee: %b\n", reports[0])
 	analysis := reportAnalysis(reports, bitRate)
 	fmt.Printf("analysis: %v\n", analysis)
 	gamma := powerGammaRate(analysis, reportLength)
