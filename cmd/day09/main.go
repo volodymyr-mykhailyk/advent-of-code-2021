@@ -13,7 +13,11 @@ func main() {
 	heightMap := ocean.HeightMapFromStrings(lines)
 
 	fmt.Printf("Analyzing %vx%v height map\n", len(heightMap), len(heightMap[0]))
-	riskLevel := sonar.RiskLevel(sonar.LowPoints(heightMap))
+	lowPoints := sonar.LowPoints(heightMap)
+	lowPointsRisk := sonar.LowPointsRiskLevel(heightMap, lowPoints)
 
-	fmt.Printf("Risk Level is: %v\n", riskLevel)
+	fmt.Printf("Low Points Risk Level is: %v\n", lowPointsRisk)
+
+	largestBasinsRisk := sonar.BasinsRiskLevel(heightMap, sonar.LargestBasins(heightMap, lowPoints))
+	fmt.Printf("Basins Risk Level is: %v\n", largestBasinsRisk)
 }
