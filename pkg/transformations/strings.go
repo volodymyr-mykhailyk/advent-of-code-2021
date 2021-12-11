@@ -14,6 +14,10 @@ func SplitLines(input []string, separator string) [][]string {
 	return result
 }
 
+func GroupOver(input []string, separator string) [][]string {
+	return [][]string{}
+}
+
 func ParseIntegers(input []string) []int {
 	result := make([]int, len(input))
 	for i, v := range input {

@@ -37,3 +37,14 @@ func TestSplitLines(t *testing.T) {
 		}
 	})
 }
+
+func TestGroupOver(t *testing.T) {
+	content := GroupOver([]string{"11", "22", "33", "22", "33", "11"}, "33")
+	t.Run("Parsing", func(t *testing.T) {
+		got := content
+		want := [][]string{{"11", "22"}, {"22"}, {"11"}}
+		if !reflect.DeepEqual(got, want) {
+			t.Errorf("TestSplitLines()) = %v, want %v", got, want)
+		}
+	})
+}
