@@ -44,6 +44,17 @@ func TestSimulateColony(t *testing.T) {
 	})
 }
 
+func TestSimulateGroupFlash(t *testing.T) {
+	t.Run("Example Simulation", func(t *testing.T) {
+		plot := bigExample()
+		got := SimulateGroupFlash(plot)
+		want := 195
+		if !reflect.DeepEqual(got, want) {
+			t.Errorf("TestSimulateGroupFlash() = %v, want %v", got, want)
+		}
+	})
+}
+
 func smallExample() structures.FlatValuePlot {
 	data := []string{
 		"11111",

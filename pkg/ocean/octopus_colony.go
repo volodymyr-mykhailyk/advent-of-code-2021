@@ -16,11 +16,18 @@ func SimulateColony(plot structures.FlatValuePlot, steps int) int {
 	for i := 0; i < steps; i++ {
 		step := SimulateStep(plot)
 		flashes += step
-		//fmt.Printf("-------------STEP: %v--------------------\n", i)
-		//fmt.Printf("%v\n", strings.Join(plot.Printable(""), "\n"))
-		//fmt.Printf("-------------FLASHES: %v--------------------\n", step)
 	}
 	return flashes
+}
+
+func SimulateGroupFlash(plot structures.FlatValuePlot) int {
+	step, flashed := 0, 0
+	colonySize := plot.Size()
+	for flashed < colonySize {
+		flashed = SimulateStep(plot)
+		step++
+	}
+	return step
 }
 
 func flash(plot structures.FlatValuePlot, flashed map[structures.Point]bool) {

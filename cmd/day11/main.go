@@ -11,9 +11,12 @@ import (
 func main() {
 	tasks.Announce("Day11")
 	lines := tasks.ReadLines("cmd/day11/input.txt")
-	colony := structures.FlatValuesFromString(transformations.SplitLines(lines, ""))
+	colony1 := structures.FlatValuesFromString(transformations.SplitLines(lines, ""))
 
-	fmt.Printf("Simulating %vx%v octopus colony\n", len(colony), len(colony[0]))
-	flashes := ocean.SimulateColony(colony, 100)
+	fmt.Printf("Simulating %v octopus colony1\n", colony1.Size())
+	flashes := ocean.SimulateColony(colony1, 100)
 	fmt.Printf("Total number of dumbos flashed: %v\n", flashes)
+
+	groupFlashAt := ocean.SimulateGroupFlash(colony1) + 100
+	fmt.Printf("Everyone will flash at: %v\n", groupFlashAt)
 }

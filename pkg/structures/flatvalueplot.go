@@ -86,6 +86,10 @@ func (plot FlatValuePlot) Printable(valueSep string) []string {
 	return result
 }
 
+func (plot FlatValuePlot) Size() int {
+	return len(plot) * len(plot[0])
+}
+
 func FlatValuesFromString(input [][]string) FlatValuePlot {
 	maxY := len(input)
 	maxX := len(input[0])
