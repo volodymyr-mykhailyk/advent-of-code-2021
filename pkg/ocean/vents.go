@@ -1,17 +1,18 @@
 package ocean
 
 import (
+	"github.com/vmykhailyk/advent-of-code-2021/pkg/structures"
 	"math"
 	"strconv"
 	"strings"
 )
 
 type Vent struct {
-	Start Point
-	End   Point
+	Start structures.Point
+	End   structures.Point
 }
 
-type VentMap map[Point]int
+type VentMap map[structures.Point]int
 
 func (vent Vent) IsStraight() bool {
 	return vent.IsHorizontal() || vent.IsVertical() || vent.IsDiagonal()
@@ -47,13 +48,13 @@ func (vent Vent) Length() int {
 	}
 }
 
-func (vent Vent) Path() []Point {
+func (vent Vent) Path() []structures.Point {
 	length := vent.Length()
 	xs := coordsRange(vent.Start.X, vent.End.X, length)
 	ys := coordsRange(vent.Start.Y, vent.End.Y, length)
-	points := make([]Point, length+1)
+	points := make([]structures.Point, length+1)
 	for i := 0; i <= length; i++ {
-		points[i] = Point{X: xs[i], Y: ys[i]}
+		points[i] = structures.Point{X: xs[i], Y: ys[i]}
 	}
 	return points
 }
@@ -61,7 +62,7 @@ func (vent Vent) Path() []Point {
 func (ventMap VentMap) Presentation() []string {
 	maxX, maxY := ventMap.Dimensions()
 	presentation := make([]string, maxY+1)
-	for y, _ := range presentation {
+	for y := range presentation {
 		presentation[y] = strings.Repeat(".", maxX+1)
 	}
 	for point, count := range ventMap {
@@ -75,7 +76,7 @@ func (ventMap VentMap) Dimensions() (int, int) {
 	i := 0
 	xs := make([]int, len(ventMap))
 	ys := make([]int, len(ventMap))
-	for point, _ := range ventMap {
+	for point := range ventMap {
 		xs[i] = point.X
 		ys[i] = point.Y
 		i++
@@ -87,15 +88,7 @@ func (ventMap VentMap) Dimensions() (int, int) {
 
 func VentFromString(input string) Vent {
 	points := strings.Split(input, " -> ")
-	return Vent{Start: PointFromString(points[0]), End: PointFromString(points[1])}
-}
-
-func sortCoords(c1 int, c2 int) (int, int) {
-	if c1 > c2 {
-		return c2, c1
-	} else {
-		return c1, c2
-	}
+	return Vent{Start: structures.PointFromString(points[0]), End: structures.PointFromString(points[1])}
 }
 
 func coordsRange(s int, e int, length int) []int {

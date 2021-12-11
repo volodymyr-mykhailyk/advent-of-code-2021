@@ -3,6 +3,7 @@ package sonar
 import (
 	"fmt"
 	"github.com/vmykhailyk/advent-of-code-2021/pkg/ocean"
+	"github.com/vmykhailyk/advent-of-code-2021/pkg/structures"
 	"github.com/vmykhailyk/advent-of-code-2021/pkg/tasks"
 	"reflect"
 	"strings"
@@ -31,7 +32,7 @@ func TestBuildVentMap(t *testing.T) {
 	t.Run("Horizontal", func(t *testing.T) {
 		readings := buildVents([]string{"1,1 -> 3,1"})
 		got := BuildVentMap(readings)
-		want := ocean.VentMap{ocean.Point{X: 1, Y: 1}: 1, ocean.Point{X: 2, Y: 1}: 1, ocean.Point{X: 3, Y: 1}: 1}
+		want := ocean.VentMap{structures.Point{X: 1, Y: 1}: 1, structures.Point{X: 2, Y: 1}: 1, structures.Point{X: 3, Y: 1}: 1}
 		if !reflect.DeepEqual(got, want) {
 			t.Errorf("TestBuildVentMap() = %v, want %v", got, want)
 		}
@@ -39,7 +40,7 @@ func TestBuildVentMap(t *testing.T) {
 	t.Run("Overlapping", func(t *testing.T) {
 		readings := buildVents([]string{"1,1 -> 2,1", "2,0 -> 2,1"})
 		got := BuildVentMap(readings)
-		want := ocean.VentMap{ocean.Point{X: 1, Y: 1}: 1, ocean.Point{X: 2, Y: 1}: 2, ocean.Point{X: 2, Y: 0}: 1}
+		want := ocean.VentMap{structures.Point{X: 1, Y: 1}: 1, structures.Point{X: 2, Y: 1}: 2, structures.Point{X: 2, Y: 0}: 1}
 		if !reflect.DeepEqual(got, want) {
 			t.Errorf("TestBuildVentMap() = %v, want %v", got, want)
 		}
@@ -47,13 +48,12 @@ func TestBuildVentMap(t *testing.T) {
 	t.Run("Vertical", func(t *testing.T) {
 		readings := buildVents([]string{"1,1 -> 1,3"})
 		got := BuildVentMap(readings)
-		want := ocean.VentMap{ocean.Point{X: 1, Y: 1}: 1, ocean.Point{X: 1, Y: 2}: 1, ocean.Point{X: 1, Y: 3}: 1}
+		want := ocean.VentMap{structures.Point{X: 1, Y: 1}: 1, structures.Point{X: 1, Y: 2}: 1, structures.Point{X: 1, Y: 3}: 1}
 		if !reflect.DeepEqual(got, want) {
 			t.Errorf("TestBuildVentMap() = %v, want %v", got, want)
 		}
 	})
 }
-
 
 func TestDangerousPoints(t *testing.T) {
 	t.Run("Example 1", func(t *testing.T) {
@@ -108,5 +108,3 @@ func day05ExampleInput() []string {
 		"5,5 -> 8,2",
 	}
 }
-
-

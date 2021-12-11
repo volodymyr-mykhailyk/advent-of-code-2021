@@ -2,6 +2,7 @@ package sonar
 
 import (
 	"github.com/vmykhailyk/advent-of-code-2021/pkg/ocean"
+	"github.com/vmykhailyk/advent-of-code-2021/pkg/structures"
 )
 
 func BuildVentMap(vents []ocean.Vent) ocean.VentMap {
@@ -14,8 +15,8 @@ func BuildVentMap(vents []ocean.Vent) ocean.VentMap {
 	return ventMap
 }
 
-func DangerousPoints(ventMap ocean.VentMap) []ocean.Point {
-	var points []ocean.Point
+func DangerousPoints(ventMap ocean.VentMap) []structures.Point {
+	var points []structures.Point
 	for point, vents := range ventMap {
 		if vents > 1 {
 			points = append(points, point)
@@ -30,5 +31,3 @@ func mapVent(vent ocean.Vent, ventMap ocean.VentMap) {
 		ventMap[point]++
 	}
 }
-
-

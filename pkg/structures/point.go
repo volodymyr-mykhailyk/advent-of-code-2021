@@ -1,4 +1,4 @@
-package ocean
+package structures
 
 import (
 	"github.com/vmykhailyk/advent-of-code-2021/pkg/transformations"

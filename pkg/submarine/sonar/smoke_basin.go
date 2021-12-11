@@ -1,37 +1,37 @@
 package sonar
 
 import (
-	"github.com/vmykhailyk/advent-of-code-2021/pkg/ocean"
+	"github.com/vmykhailyk/advent-of-code-2021/pkg/structures"
 	"sort"
 )
 
-func LowPoints(hMap ocean.HeightMap) []ocean.Point {
-	var points []ocean.Point
-	hMap.VisitAll(func(height int, point ocean.Point) {
-		if lowestPoint(height, hMap.Surroundings(point)) {
+func LowPoints(plot structures.FlatValuePlot) []structures.Point {
+	var points []structures.Point
+	plot.VisitAll(func(height int, point structures.Point) {
+		if lowestPoint(height, plot.Surroundings(point)) {
 			points = append(points, point)
 		}
 	})
 	return points
 }
 
-func LargestBasins(hMap ocean.HeightMap, points []ocean.Point) [][]ocean.Point {
-	basins := make([][]ocean.Point, len(points))
+func LargestBasins(plot structures.FlatValuePlot, points []structures.Point) [][]structures.Point {
+	basins := make([][]structures.Point, len(points))
 	for i, point := range points {
-		basins[i] = basinFor(hMap, point)
+		basins[i] = basinFor(plot, point)
 	}
 	return basins
 }
 
-func LowPointsRiskLevel(hMap ocean.HeightMap, points []ocean.Point) int {
+func LowPointsRiskLevel(plot structures.FlatValuePlot, points []structures.Point) int {
 	risk := 0
 	for _, point := range points {
-		risk += hMap.Get(point) + 1
+		risk += plot.Get(point) + 1
 	}
 	return risk
 }
 
-func BasinsRiskLevel(hMap ocean.HeightMap, basins [][]ocean.Point) int {
+func BasinsRiskLevel(_ structures.FlatValuePlot, basins [][]structures.Point) int {
 	sizes := make([]int, len(basins))
 	for i, basin := range basins {
 		sizes[i] = len(basin)
@@ -54,23 +54,23 @@ func lowestPoint(height int, surroundings []int) bool {
 	return true
 }
 
-func basinFor(hMap ocean.HeightMap, point ocean.Point) []ocean.Point {
-	var basinPoints = make(map[ocean.Point]bool)
-	basinAround(hMap, point, basinPoints)
-	points := make([]ocean.Point, len(basinPoints))
+func basinFor(plot structures.FlatValuePlot, point structures.Point) []structures.Point {
+	var basinPoints = make(map[structures.Point]bool)
+	basinAround(plot, point, basinPoints)
+	points := make([]structures.Point, len(basinPoints))
 	i := 0
-	for point, _ := range basinPoints {
+	for point := range basinPoints {
 		points[i] = point
 		i++
 	}
 	return points
 }
 
-func basinAround(hMap ocean.HeightMap, point ocean.Point, visited map[ocean.Point]bool) {
+func basinAround(plot structures.FlatValuePlot, point structures.Point, visited map[structures.Point]bool) {
 	visited[point] = true
-	hMap.VisitAround(point, func(height int, p ocean.Point) {
+	plot.VisitAround(point, func(height int, p structures.Point) {
 		if !visited[p] && height < 9 {
-			basinAround(hMap, p, visited)
+			basinAround(plot, p, visited)
 		}
 	})
 }
