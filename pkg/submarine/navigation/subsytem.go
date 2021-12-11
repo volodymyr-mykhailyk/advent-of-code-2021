@@ -2,6 +2,7 @@ package navigation
 
 import (
 	"math"
+	"sort"
 	"strings"
 )
 
@@ -12,11 +13,11 @@ var subsystemGroups = []string{
 	"<>",
 }
 
-var syntaxScores = map[string]int{
-	")": 3,
-	"]": 57,
-	"{": 1197,
-	">": 25137,
+var autoCompleteScores = map[string]int{
+	"(": 1,
+	"[": 2,
+	"{": 3,
+	"<": 4,
 }
 
 var invalidPatterns = map[string]int{
@@ -34,29 +35,61 @@ var invalidPatterns = map[string]int{
 	"<}": 1197,
 }
 
-func IsValid(input string) bool {
-	if reduceValidGroups(input) != "" {
-		return false
-	} else {
-		return true
-	}
-}
-
 func SystemErrorScore(input []string) int {
 	score := 0
 	for _, line := range input {
-		score += SyntaxErrorScore(line)
+		score += syntaxErrorScore(line)
 	}
 	return score
 }
 
-func SyntaxErrorScore(input string) int {
+func SystemAutocompleteScore(input []string) int {
+	var scores []int
+	for _, line := range input {
+		if !isError(line) {
+			scores = append(scores, autoCompleteScore(line))
+		}
+	}
+	sort.Ints(scores)
+	return scores[len(scores)/2]
+}
+
+func autoCompleteScore(line string) int {
+	normalized := reduceValidGroups(line)
+	missingCharacters := autoCompleteString(normalized)
+	score := 0
+	for _, char := range missingCharacters {
+		score *= 5
+		score += autoCompleteScores[char]
+	}
+	return score
+}
+
+func autoCompleteString(normalized string) []string {
+	chars := strings.Split(normalized, "")
+	for i, j := 0, len(chars)-1; i < j; i, j = i+1, j-1 {
+		chars[i], chars[j] = chars[j], chars[i]
+	}
+	return chars
+}
+
+func syntaxErrorScore(input string) int {
 	corruptedGroup := corruptedGroup(reduceValidGroups(input))
 	if corruptedGroup == "" {
 		return 0
 	} else {
 		return invalidPatterns[corruptedGroup]
 	}
+}
+
+func isError(input string) bool {
+	normalized := reduceValidGroups(input)
+	for pattern := range invalidPatterns {
+		if strings.Contains(normalized, pattern) {
+			return true
+		}
+	}
+	return false
 }
 
 func corruptedGroup(input string) string {

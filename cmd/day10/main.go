@@ -14,4 +14,7 @@ func main() {
 	syntaxErrorScore := navigation.SystemErrorScore(lines)
 
 	fmt.Printf("System Error Score: %v\n", syntaxErrorScore)
+
+	autoCompleteScore := navigation.SystemAutocompleteScore(lines)
+	fmt.Printf("System Auto Complete Score: %v\n", autoCompleteScore)
 }

@@ -2,32 +2,6 @@ package navigation
 
 import "testing"
 
-func TestIsValid(t *testing.T) {
-	tests := []struct {
-		input string
-		want  bool
-	}{
-		{"()", true},
-		{"[]", true},
-		{"([])", true},
-		{"{()()()}", true},
-		{"<([{}])>", true},
-		{"[<>({}){}[([])<>]]", true},
-		{"(((((((((())))))))))", true},
-		{"(]", false},
-		{"{()()()>", false},
-		{"(((()))}", false},
-		{"<([]){()}[{}])", false},
-	}
-	for _, tt := range tests {
-		t.Run(tt.input, func(t *testing.T) {
-			if got := IsValid(tt.input); got != tt.want {
-				t.Errorf("IsValid() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
 func TestSyntaxErrorScore(t *testing.T) {
 	tests := []struct {
 		input string
@@ -45,8 +19,31 @@ func TestSyntaxErrorScore(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.input, func(t *testing.T) {
-			if got := SyntaxErrorScore(tt.input); got != tt.want {
-				t.Errorf("SyntaxErrorScore() = %v, want %v", got, tt.want)
+			if got := syntaxErrorScore(tt.input); got != tt.want {
+				t.Errorf("syntaxErrorScore() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestAutoCompleteScore(t *testing.T) {
+	tests := []struct {
+		input string
+		want  int
+	}{
+		{"[]", 0},
+		{"([])", 0},
+		{"(((", 31},
+		{"[({(<(())[]>[[{[]{<()<>>", 288957},
+		{"[(()[<>])]({[<{<<[]>>(", 5566},
+		{"(((({<>}<{<{<>}{[]{[]{}", 1480781},
+		{"{<[[]]>}<{[{[{[]{()[[[]", 995444},
+		{"<{([{{}}[<[[[<>{}]]]>[]]", 294},
+	}
+	for _, tt := range tests {
+		t.Run(tt.input, func(t *testing.T) {
+			if got := autoCompleteScore(tt.input); got != tt.want {
+				t.Errorf("autoCompleteScore() = %v, want %v", got, tt.want)
 			}
 		})
 	}
@@ -59,6 +56,17 @@ func TestSystemErrorScore(t *testing.T) {
 		want := 26397
 		if got != want {
 			t.Errorf("TestSystemErrorScore() = %v, want %v", got, want)
+		}
+	})
+}
+
+func TestSystemAutocompleteScore(t *testing.T) {
+	t.Run("Example 1", func(t *testing.T) {
+		input := exampleInput()
+		got := SystemAutocompleteScore(input)
+		want := 288957
+		if got != want {
+			t.Errorf("TestSystemAutocompleteScore() = %v, want %v", got, want)
 		}
 	})
 }
