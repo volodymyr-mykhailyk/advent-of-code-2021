@@ -15,7 +15,18 @@ func SplitLines(input []string, separator string) [][]string {
 }
 
 func GroupOver(input []string, separator string) [][]string {
-	return [][]string{}
+	var result [][]string
+	var group []string
+	for _, line := range input {
+		if line == separator {
+			result = append(result, group)
+			group = []string{}
+		} else {
+			group = append(group, line)
+		}
+	}
+	result = append(result, group)
+	return result
 }
 
 func ParseIntegers(input []string) []int {
@@ -41,5 +52,3 @@ func ParseBits(input []string) []int {
 	}
 	return result
 }
-
-
