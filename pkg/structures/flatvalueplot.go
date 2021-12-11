@@ -3,6 +3,7 @@ package structures
 import (
 	"math"
 	"strconv"
+	"strings"
 )
 
 type FlatValuePlot [][]int
@@ -15,6 +16,12 @@ func (plot FlatValuePlot) Get(point Point) int {
 	}
 }
 
+func (plot FlatValuePlot) Set(point Point, value int) {
+	if plot.IsInbound(point) {
+		plot[point.Y][point.X] = value
+	}
+}
+
 func (plot FlatValuePlot) Surroundings(point Point) []int {
 	results := make([]int, 4)
 	results[0] = plot.Get(point.Up())
@@ -24,22 +31,33 @@ func (plot FlatValuePlot) Surroundings(point Point) []int {
 	return results
 }
 
-func (plot FlatValuePlot) VisitAll(f func(height int, point Point)) {
+func (plot FlatValuePlot) VisitAll(f func(value int, point Point)) {
 	for y, row := range plot {
-		for x, height := range row {
-			f(height, Point{X: x, Y: y})
+		for x, value := range row {
+			f(value, Point{X: x, Y: y})
 		}
 	}
 }
 
-func (plot FlatValuePlot) VisitAround(point Point, f func(height int, point Point)) {
+func (plot FlatValuePlot) VisitAdjacent(point Point, f func(value int, point Point)) {
 	plot.VisitPoint(point.Up(), f)
 	plot.VisitPoint(point.Right(), f)
 	plot.VisitPoint(point.Down(), f)
 	plot.VisitPoint(point.Left(), f)
 }
 
-func (plot FlatValuePlot) VisitPoint(point Point, f func(height int, point Point)) {
+func (plot FlatValuePlot) VisitAround(point Point, f func(value int, point Point)) {
+	plot.VisitPoint(point.Up(), f)
+	plot.VisitPoint(point.UpRight(), f)
+	plot.VisitPoint(point.Right(), f)
+	plot.VisitPoint(point.DownRight(), f)
+	plot.VisitPoint(point.Down(), f)
+	plot.VisitPoint(point.DownLeft(), f)
+	plot.VisitPoint(point.Left(), f)
+	plot.VisitPoint(point.UpLeft(), f)
+}
+
+func (plot FlatValuePlot) VisitPoint(point Point, f func(value int, point Point)) {
 	if plot.IsInbound(point) {
 		f(plot.Get(point), point)
 	}
@@ -56,14 +74,26 @@ func (plot FlatValuePlot) IsInbound(point Point) bool {
 	}
 }
 
-func FlatValuesFromString(input []string) FlatValuePlot {
+func (plot FlatValuePlot) Printable(valueSep string) []string {
+	result := make([]string, len(plot))
+	for y, line := range plot {
+		elements := make([]string, len(line))
+		for x, value := range line {
+			elements[x] = strconv.FormatInt(int64(value), 10)
+		}
+		result[y] = strings.Join(elements, valueSep)
+	}
+	return result
+}
+
+func FlatValuesFromString(input [][]string) FlatValuePlot {
 	maxY := len(input)
 	maxX := len(input[0])
 	plot := make(FlatValuePlot, maxY)
 	for y, line := range input {
 		plot[y] = make([]int, maxX)
-		for x, height := range line {
-			h, _ := strconv.ParseInt(string(height), 10, 0)
+		for x, value := range line {
+			h, _ := strconv.ParseInt(value, 10, 0)
 			plot[y][x] = int(h)
 		}
 	}

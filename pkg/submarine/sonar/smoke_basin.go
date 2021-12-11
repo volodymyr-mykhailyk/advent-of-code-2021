@@ -68,7 +68,7 @@ func basinFor(plot structures.FlatValuePlot, point structures.Point) []structure
 
 func basinAround(plot structures.FlatValuePlot, point structures.Point, visited map[structures.Point]bool) {
 	visited[point] = true
-	plot.VisitAround(point, func(height int, p structures.Point) {
+	plot.VisitAdjacent(point, func(height int, p structures.Point) {
 		if !visited[p] && height < 9 {
 			basinAround(plot, p, visited)
 		}
