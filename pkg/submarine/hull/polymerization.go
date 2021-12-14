@@ -2,33 +2,24 @@ package hull
 
 import (
 	"math"
+	"strconv"
 	"strings"
 )
 
+type Element struct {
+	symbol string
+	count  int
+}
 type PolymerFactory map[string]string
+type PolymerElements map[string]int
 
-func SequencePolymers(sequence string, factory PolymerFactory, steps int) string {
-	for i := 0; i < steps; i++ {
-		sequence = InsertPolymerPairs(sequence, factory)
-	}
-	return sequence
-}
-
-func InsertPolymerPairs(sequence string, factory PolymerFactory) string {
-	if len(sequence) > 1 {
-		return insertPair(sequence[:2], factory) + InsertPolymerPairs(sequence[1:], factory)
-	} else {
-		return sequence
+func (elements PolymerElements) Merge(other PolymerElements) {
+	for k, v := range other {
+		elements[k] += v
 	}
 }
 
-func PolymerSequenceInfo(sequence string) int {
-	elements := elementsCount(sequence)
-	uniq, common := elementPairs(elements)
-	return common - uniq
-}
-
-func elementPairs(elements map[string]int) (int, int) {
+func (elements PolymerElements) SequenceInfo() int {
 	min := math.MaxInt
 	max := 0
 	for _, count := range elements {
@@ -39,22 +30,41 @@ func elementPairs(elements map[string]int) (int, int) {
 			max = count
 		}
 	}
-	return min, max
+	return max - min
 }
 
-func elementsCount(sequence string) map[string]int {
-	elements := make(map[string]int)
-	for _, element := range strings.Split(sequence, "") {
+type SequenceCache map[string]PolymerElements
+
+func SequencePolymers(seed string, factory PolymerFactory, steps int) PolymerElements {
+	elements := make(PolymerElements)
+	cache := make(SequenceCache)
+	for i, element := range strings.Split(seed, "") {
 		elements[element]++
+		if i < len(seed)-1 {
+			element1 := seed[i : i+1]
+			element2 := seed[i+1 : i+2]
+			elements.Merge(sequencePair(factory, cache, element1, element2, steps))
+		}
 	}
 	return elements
 }
 
-func insertPair(pair string, factory PolymerFactory) string {
-	if element, ok := factory[pair]; ok {
-		return pair[:1] + element
+func sequencePair(factory PolymerFactory, cache SequenceCache, element1 string, element2 string, steps int) PolymerElements {
+	if steps > 0 {
+		cacheKey := element1 + element2 + strconv.Itoa(steps)
+		if elements, ok := cache[cacheKey]; ok {
+			return elements
+		} else {
+			newElement := factory[element1+element2]
+			elements := make(PolymerElements)
+			elements[newElement]++
+			elements.Merge(sequencePair(factory, cache, element1, newElement, steps-1))
+			elements.Merge(sequencePair(factory, cache, newElement, element2, steps-1))
+			cache[cacheKey] = elements
+			return elements
+		}
 	} else {
-		return pair
+		return PolymerElements{}
 	}
 }
 
