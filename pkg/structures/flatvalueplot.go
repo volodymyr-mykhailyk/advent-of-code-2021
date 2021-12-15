@@ -74,7 +74,7 @@ func (plot FlatValuePlot) IsInbound(point Point) bool {
 	}
 }
 
-func (plot FlatValuePlot) Printable(valueSep string) []string {
+func (plot FlatValuePlot) Presentation(valueSep string) string {
 	result := make([]string, len(plot))
 	for y, line := range plot {
 		elements := make([]string, len(line))
@@ -83,11 +83,23 @@ func (plot FlatValuePlot) Printable(valueSep string) []string {
 		}
 		result[y] = strings.Join(elements, valueSep)
 	}
-	return result
+	return strings.Join(result, "\n")
 }
 
 func (plot FlatValuePlot) Size() int {
 	return len(plot) * len(plot[0])
+}
+
+func (plot FlatValuePlot) Dimensions() (int, int) {
+	return len(plot), len(plot[0])
+}
+
+func (plot FlatValuePlot) Start() Point {
+	return Point{X: 0, Y: 0}
+}
+
+func (plot FlatValuePlot) End() Point {
+	return Point{X: len(plot[0]) - 1, Y: len(plot) - 1}
 }
 
 func FlatValuesFromString(input [][]string) FlatValuePlot {
@@ -99,6 +111,17 @@ func FlatValuesFromString(input [][]string) FlatValuePlot {
 		for x, value := range line {
 			h, _ := strconv.ParseInt(value, 10, 0)
 			plot[y][x] = int(h)
+		}
+	}
+	return plot
+}
+
+func FlatValuesFromSpec(maxX, maxY, value int) FlatValuePlot {
+	plot := make(FlatValuePlot, maxY)
+	for y := 0; y < maxY; y++ {
+		plot[y] = make([]int, maxX)
+		for x, _ := range plot[y] {
+			plot[y][x] = value
 		}
 	}
 	return plot
