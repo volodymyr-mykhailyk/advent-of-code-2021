@@ -4,6 +4,7 @@ import (
 	"github.com/vmykhailyk/advent-of-code-2021/pkg/structures"
 	"github.com/vmykhailyk/advent-of-code-2021/pkg/transformations"
 	"reflect"
+	"strings"
 	"testing"
 )
 
@@ -11,14 +12,14 @@ func TestSimulateStep(t *testing.T) {
 	t.Run("Example Simulation", func(t *testing.T) {
 		plot := smallExample()
 		SimulateStep(plot)
-		got := plot.Printable("")
-		want := []string{
+		got := plot.Presentation("")
+		want := strings.Join([]string{
 			"34543",
 			"40004",
 			"50005",
 			"40004",
 			"34543",
-		}
+		}, "\n")
 		if !reflect.DeepEqual(got, want) {
 			t.Errorf("TestSimulateStep() = %v, want %v", got, want)
 		}

@@ -1,25 +1,16 @@
 package computer
 
-import (
-	"fmt"
-)
-
 func PowerConsumption(reports []int, bitRate int) int {
 	reportLength := len(reports)
 	analysis := reportAnalysis(reports, bitRate)
-	fmt.Printf("analysis: %v\n", analysis)
 	gamma := powerGammaRate(analysis, reportLength)
-	fmt.Printf("gamma: %b\n", gamma)
 	epsilon := powerEpsilonRate(analysis, reportLength)
-	fmt.Printf("epsilon: %b\n", epsilon)
 	return gamma * epsilon
 }
 
 func LifeSupportRating(reports []int, bitRate int) int {
 	oxygen := oxygenRate(reports, bitRate)
-	fmt.Printf("oxygen: %b\n", oxygen)
 	co2 := co2ScrubbingRate(reports, bitRate)
-	fmt.Printf("co2: %b\n", oxygen)
 	return oxygen * co2
 }
 
@@ -29,15 +20,9 @@ func oxygenRate(reports []int, bitRate int) int {
 	onesCount := 0
 
 	for len(reports) > 1 {
-		fmt.Printf("---------------------------\n")
 		onesCount = numberOfOnes(reports, position)
-		fmt.Printf("oxygen position: %v\n", position)
-		fmt.Printf("oxygen ones Count: %v\n", onesCount)
 		commonBit = mostCommonNumber(onesCount, len(reports), true)
-		fmt.Printf("oxygen common bit: %v\n", commonBit)
 		reports = similarReports(reports, commonBit, position)
-		fmt.Printf("reports %b, %v\n", commonBit, position)
-		fmt.Printf("reports %b\n", reports)
 		position--
 	}
 
@@ -50,15 +35,9 @@ func co2ScrubbingRate(reports []int, bitRate int) int {
 	onesCount := 0
 
 	for len(reports) > 1 {
-		fmt.Printf("---------------------------\n")
 		onesCount = numberOfOnes(reports, position)
-		fmt.Printf("co2 position: %v\n", position)
-		fmt.Printf("co2 ones Count: %v\n", onesCount)
 		commonBit = leastCommonNumber(onesCount, len(reports), false)
-		fmt.Printf("co2 common bit: %v\n", commonBit)
 		reports = similarReports(reports, commonBit, position)
-		fmt.Printf("co2 %b, %v\n", commonBit, position)
-		fmt.Printf("co2 %b\n", reports)
 		position--
 	}
 
@@ -77,7 +56,7 @@ func similarReports(reports []int, number int, position int) []int {
 
 func reportAnalysis(reports []int, bitRate int) []int {
 	analysis := make([]int, bitRate)
-	for i, _ := range analysis {
+	for i := range analysis {
 		analysis[i] = numberOfOnes(reports, i)
 	}
 	return analysis

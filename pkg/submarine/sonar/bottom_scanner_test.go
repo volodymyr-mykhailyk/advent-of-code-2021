@@ -1,12 +1,10 @@
 package sonar
 
 import (
-	"fmt"
 	"github.com/vmykhailyk/advent-of-code-2021/pkg/ocean"
 	"github.com/vmykhailyk/advent-of-code-2021/pkg/structures"
 	"github.com/vmykhailyk/advent-of-code-2021/pkg/tasks"
 	"reflect"
-	"strings"
 	"testing"
 )
 
@@ -23,7 +21,6 @@ func TestBuildVentMap(t *testing.T) {
 		readings := buildVents(day05ExampleInput())
 		ventMap := BuildVentMap(readings)
 		got := len(ventMap)
-		fmt.Printf("%v", strings.Join(ventMap.Presentation(), "\n"))
 		want := 39
 		if got != want {
 			t.Errorf("TestBuildVentMap() = %v, want %v", got, want)
