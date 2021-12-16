@@ -48,7 +48,10 @@ func ScaleRiskPlot(plot structures.FlatValuePlot, size int) structures.FlatValue
 	plot.VisitAll(func(value int, point structures.Point) {
 		for x := 0; x < size; x++ {
 			for y := 0; y < size; y++ {
-				newValue := (value + x + y) % 10
+				newValue := value + x + y
+				for newValue > 9 {
+					newValue -= 9
+				}
 				newPoint := structures.Point{X: point.X + (maxX * x), Y: point.Y + (maxY * y)}
 				//fmt.Printf("Point %v, %v\n", point, newPoint)
 				newPlot.Set(newPoint, newValue)
@@ -100,7 +103,7 @@ func buildDistancePlotV2(plot structures.FlatValuePlot, distancePlot structures.
 					}
 				})
 			} else {
-				fmt.Printf("Reached end iteration: %v, risk: %v, path: %v\n", i, currentRisk, currentPath)
+				//fmt.Printf("Reached end iteration: %v, risk: %v, path: %v\n", i, currentRisk, currentPath)
 			}
 		}
 	}

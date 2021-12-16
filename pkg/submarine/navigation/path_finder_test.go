@@ -1,7 +1,6 @@
 package navigation
 
 import (
-	"fmt"
 	"github.com/vmykhailyk/advent-of-code-2021/pkg/structures"
 	"github.com/vmykhailyk/advent-of-code-2021/pkg/transformations"
 	"testing"
@@ -29,8 +28,9 @@ func TestFindLowestRiskPath(t *testing.T) {
 	t.Run("Example Big", func(t *testing.T) {
 		plot := examplePathFinderInput()
 		plot = ScaleRiskPlot(plot, 5)
-		fmt.Printf("Map \n%v\n", plot.Presentation(""))
+		//fmt.Printf("Map \n%v\n", plot.Presentation(""))
 		riskPlot := BuildRiskLevelPlot(plot, plot.Start(), plot.End())
+		//fmt.Printf("Risk \n%v\n", riskPlot.Presentation("\t\t"))
 		got := LowestRiskPathLevel(riskPlot, plot.End())
 		want := 315
 		if got != want {

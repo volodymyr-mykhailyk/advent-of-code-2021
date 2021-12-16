@@ -17,4 +17,8 @@ func main() {
 	riskPlot := navigation.BuildRiskLevelPlot(plot, plot.Start(), plot.End())
 	riskLevel := navigation.LowestRiskPathLevel(riskPlot, plot.End())
 	fmt.Printf("Safest path risk level: %v\n", riskLevel)
+	scaledPlot := navigation.ScaleRiskPlot(plot, 5)
+	scaledRiskPlot := navigation.BuildRiskLevelPlot(scaledPlot, scaledPlot.Start(), scaledPlot.End())
+	scaledRiskLevel := navigation.LowestRiskPathLevel(scaledRiskPlot, scaledPlot.End())
+	fmt.Printf("Safest path risk level on big map: %v\n", scaledRiskLevel)
 }
