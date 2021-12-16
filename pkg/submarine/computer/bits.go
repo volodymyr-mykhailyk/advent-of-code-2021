@@ -2,7 +2,8 @@ package computer
 
 import (
 	"fmt"
-	"math"
+	"github.com/vmykhailyk/advent-of-code-2021/pkg/science"
+	"sort"
 	"strconv"
 	"strings"
 )
@@ -16,57 +17,53 @@ type BitsPacket struct {
 }
 
 func (packet BitsPacket) Value() int {
-	value := 0
-	switch packet.Type {
-	case "000":
-		for _, subPacket := range packet.SubPackets {
-			value += subPacket.Value()
+	if packet.Type == "100" {
+		return bitsToInt(packet.Contents)
+	} else {
+		values := make([]int, len(packet.SubPackets))
+		for i, p := range packet.SubPackets {
+			values[i] = p.Value()
 		}
-	case "001":
-		value = 1
-		for _, subPacket := range packet.SubPackets {
-			value *= subPacket.Value()
-		}
-	case "010":
-		value = math.MaxInt
-		for _, subPacket := range packet.SubPackets {
-			if value > subPacket.Value() {
-				value = subPacket.Value()
-			}
-		}
-	case "011":
-		for _, subPacket := range packet.SubPackets {
-			if value < subPacket.Value() {
-				value = subPacket.Value()
-			}
-		}
-	case "100":
-		value += bitsToInt(packet.Contents)
-	case "101":
-		if packet.SubPackets[0].Value() > packet.SubPackets[1].Value() {
-			value = 1
-		} else {
-			value = 0
-		}
-	case "110":
-		if packet.SubPackets[0].Value() < packet.SubPackets[1].Value() {
-			value = 1
-		} else {
-			value = 0
-		}
-	case "111":
-		if packet.SubPackets[0].Value() == packet.SubPackets[1].Value() {
-			value = 1
-		} else {
-			value = 0
-		}
+		return valuesFunctions[packet.Type](values)
 	}
-	return value
 }
 
-func bitsToInt(input string) int {
-	value, _ := strconv.ParseInt(input, 2, 0)
-	return int(value)
+var valuesFunctions = map[string]func(values []int) int{
+	"000": func(values []int) int {
+		return science.SumElements(values)
+	},
+	"001": func(values []int) int {
+		return science.MultiplyElements(values)
+	},
+	"010": func(values []int) int {
+		sort.Ints(values)
+		return values[0]
+	},
+	"011": func(values []int) int {
+		sort.Ints(values)
+		return values[len(values)-1]
+	},
+	"101": func(values []int) int {
+		if values[0] > values[1] {
+			return 1
+		} else {
+			return 0
+		}
+	},
+	"110": func(values []int) int {
+		if values[0] < values[1] {
+			return 1
+		} else {
+			return 0
+		}
+	},
+	"111": func(values []int) int {
+		if values[0] == values[1] {
+			return 1
+		} else {
+			return 0
+		}
+	},
 }
 
 func ReadBitsPacket(input string) BitsPacket {
@@ -87,17 +84,13 @@ func BitsPacketVersionChecksum(packet BitsPacket) int {
 func readPacket(packet *BitsPacket, input string) string {
 	input = readPacketInfo(packet, input)
 	input = readPacketContents(packet, input)
-	readSubPackets(packet)
-	input = removeTrailingZeros(input)
 	return input
 }
 
-func removeTrailingZeros(input string) string {
+func readPacketInfo(packet *BitsPacket, input string) string {
+	packet.Version, input = readNextBits(input, 3)
+	packet.Type, input = readNextBits(input, 3)
 	return input
-}
-
-func readSubPackets(packet *BitsPacket) {
-
 }
 
 func readPacketContents(packet *BitsPacket, input string) string {
@@ -109,26 +102,34 @@ func readPacketContents(packet *BitsPacket, input string) string {
 }
 
 func readOperatorContents(packet *BitsPacket, input string) string {
-	var identifier, lengthStr, subPackets string
-	identifier, input = readNextBits(input, 1)
+	identifier, input := readNextBits(input, 1)
 	if identifier == "0" {
-		lengthStr, input = readNextBits(input, 15)
-		length, _ := strconv.ParseInt(lengthStr, 2, 0)
-		subPackets, input = readNextBits(input, int(length))
-		for len(subPackets) > 0 {
-			subPacket := BitsPacket{}
-			subPackets = readPacket(&subPacket, subPackets)
-			packet.SubPackets = append(packet.SubPackets, subPacket)
-		}
+		return readBitLengthOperator(packet, input)
 	}
 	if identifier == "1" {
-		lengthStr, input = readNextBits(input, 11)
-		length, _ := strconv.ParseInt(lengthStr, 2, 0)
-		for i := 0; i < int(length); i++ {
-			subPacket := BitsPacket{}
-			input = readPacket(&subPacket, input)
-			packet.SubPackets = append(packet.SubPackets, subPacket)
-		}
+		input = readPacketLengthOperator(packet, input)
+	}
+	return input
+}
+
+func readPacketLengthOperator(packet *BitsPacket, input string) string {
+	lengthStr, input := readNextBits(input, 11)
+	packetsCount := bitsToInt(lengthStr)
+	for i := 0; i < packetsCount; i++ {
+		subPacket := BitsPacket{}
+		input = readPacket(&subPacket, input)
+		packet.SubPackets = append(packet.SubPackets, subPacket)
+	}
+	return input
+}
+
+func readBitLengthOperator(packet *BitsPacket, input string) string {
+	lengthStr, input := readNextBits(input, 15)
+	subPackets, input := readNextBits(input, bitsToInt(lengthStr))
+	for len(subPackets) > 0 {
+		subPacket := BitsPacket{}
+		subPackets = readPacket(&subPacket, subPackets)
+		packet.SubPackets = append(packet.SubPackets, subPacket)
 	}
 	return input
 }
@@ -146,12 +147,6 @@ func readLiteralContents(packet *BitsPacket, input string) string {
 	return input
 }
 
-func readPacketInfo(packet *BitsPacket, input string) string {
-	packet.Version = input[0:3]
-	packet.Type = input[3:6]
-	return input[6:]
-}
-
 func convertToBitsString(input string) string {
 	hexList := strings.Split(input, "")
 	bitsList := make([]string, len(hexList))
@@ -164,6 +159,11 @@ func convertToBitsString(input string) string {
 
 func readNextBits(input string, length int) (string, string) {
 	bits := input[0:length]
-	remaining := "" + input[length:]
+	remaining := input[length:]
 	return bits, remaining
+}
+
+func bitsToInt(input string) int {
+	value, _ := strconv.ParseInt(input, 2, 0)
+	return int(value)
 }
